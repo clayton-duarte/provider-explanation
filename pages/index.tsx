@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-
-import { useUser } from "../providers/user";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function Home() {
-  const { user, getUser } = useUser();
+  const router = useRouter();
+  const userId = router.query;
 
   useEffect(() => {
-    if (!user) getUser();
-  }, []);
+    router.replace(`[userId]`, `/1`);
+  }, [userId]);
 
-  return <pre>{JSON.stringify(user, undefined, 2)}</pre>;
+  return null;
 }

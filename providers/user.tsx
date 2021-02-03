@@ -2,13 +2,26 @@ import React, {
   FunctionComponent,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from "react";
+import { useRouter } from "next/router";
 
 const UserCtx = createContext(null);
 
 export const useUser = () => {
-  const { user, setUser } = useContext(UserCtx);
+  const { user } = useContext(UserCtx);
+
+  return { user };
+};
+
+const Provider: FunctionComponent = ({ children }) => {
+  // const [loading, setLoading] = useState();
+  const [user, setUser] = useState();
+
+  const {
+    query: { userId },
+  } = useRouter();
 
   const getUser = async (id: number) => {
     const response = await fetch(
@@ -20,11 +33,10 @@ export const useUser = () => {
     setUser(user);
   };
 
-  return { user, getUser };
-};
-
-const Provider: FunctionComponent = ({ children }) => {
-  const [user, setUser] = useState();
+  // on load, userId change
+  useEffect(() => {
+    if (userId) getUser(Number(userId));
+  }, [userId]);
 
   return (
     <UserCtx.Provider value={{ user, setUser }}>{children}</UserCtx.Provider>
